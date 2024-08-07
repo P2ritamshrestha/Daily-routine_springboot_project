@@ -2,9 +2,9 @@ package com.login.register.controller;
 
 import com.login.register.Dto.UserProfileRequestDto;
 import com.login.register.service.UserProfileService;
-import com.login.register.service.impl.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,9 +22,9 @@ public class AuthController {
     private String path;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> registerUser( @ModelAttribute UserProfileRequestDto userProfileRequestDto) throws IOException {
+    public ResponseEntity<String> registerUser( @ModelAttribute UserProfileRequestDto userProfileRequestDto) throws IOException {
         userProfileService.registerUser(path,userProfileRequestDto);
-        return ResponseEntity.ok("User registered successfully. Please check your email for OTP.");
+        return new  ResponseEntity<>("User registered successfully. Please check your email for OTP.", HttpStatus.CREATED);
     }
 
     @PostMapping("/verify-otp")

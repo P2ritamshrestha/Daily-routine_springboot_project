@@ -29,19 +29,22 @@ public class UserService implements UserProfileService {
 
     public void registerUser(String path,UserProfileRequestDto userProfileRequestDto) throws IOException {
 
+        // Validation
         if (userProfileRepository.findByUsername(userProfileRequestDto.getUsername()) != null) {
             throw new RuntimeException("Username already exists");
         }
         if (userProfileRepository.findByEmail(userProfileRequestDto.getEmail()) != null) {
             throw new RuntimeException("Email already exists");
         }
-        UserProfile userProfile = new UserProfile();
-        userProfile.setFullName(userProfileRequestDto.getFullName());
-        userProfile.setPassword(passwordEncoder.encode(userProfileRequestDto.getPassword()));
-        userProfile.setUsername(userProfileRequestDto.getUsername());
-        userProfile.setEmail(userProfileRequestDto.getEmail());
-
-        userProfile.setOtpCode(generateOtp());
+        if (userProfileRequestDto.getFullName() == null || userProfileRequestDto.getFullName().length() < 3) {
+            throw new RuntimeException("Full name is not valid");
+        }
+        if (userProfileRequestDto.getPassword() == null || !(userProfileRequestDto.getPassword().contains("@") || userProfileRequestDto.getPassword().contains("!"))) {
+            throw new RuntimeException("Password is not valid");
+        }
+        if (userProfileRequestDto.getEmail() == null || !userProfileRequestDto.getEmail().endsWith("@gmail.com")) {
+            throw new RuntimeException("Email is not valid");
+        }
 
         String filepath= path+ File.separator+ userProfileRequestDto.getProfile().getOriginalFilename();
         File newFile = new File(path);
@@ -49,10 +52,17 @@ public class UserService implements UserProfileService {
             newFile.mkdirs();
         }
         Files.copy(userProfileRequestDto.getProfile().getInputStream(), Paths.get(filepath));
-        userProfile.setProfilePath(filepath);
+
+
+        UserProfile userProfile = UserProfile.builder()
+                .fullName(userProfileRequestDto.getFullName())
+                .password(passwordEncoder.encode(userProfileRequestDto.getPassword()))
+                .username(userProfileRequestDto.getUsername())
+                .email(userProfileRequestDto.getEmail())
+                .otpCode(generateOtp())
+                .profilePath(filepath).build();
 
         userProfileRepository.save(userProfile);
-
         emailService.sendOtpEmail(userProfileRequestDto.getEmail(), userProfile.getOtpCode());
 
     }

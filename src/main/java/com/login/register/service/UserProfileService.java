@@ -7,6 +7,6 @@ import java.io.IOException;
 
 @Service
 public interface UserProfileService {
-    public void registerUser(String path, UserProfileRequestDto userProfileRequestDto) throws IOException;
-    public boolean verifyOtp(String email, String otp);
+     void registerUser(String path, UserProfileRequestDto userProfileRequestDto) throws IOException;
+     boolean verifyOtp(String email, String otp);
 }
