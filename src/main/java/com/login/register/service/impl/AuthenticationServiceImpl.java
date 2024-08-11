@@ -16,8 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -95,22 +94,28 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public JwtAuthenticationResponse signIn(SignInRequest signInRequest) {
+    public UserProfileRequestDto signIn(SignInRequest signInRequest) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInRequest.getUsername(), signInRequest.getPassword()));
 
-        var user = userRepository.findByUsername(signInRequest.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        UserProfile user = userRepository.findByUsername(signInRequest.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         if (!user.isEnabled()){
             throw new RuntimeException("Otp not verified");
         }
+        UserProfileRequestDto userProfileRequestDto = new UserProfileRequestDto();
+        userProfileRequestDto.setId(user.getId());
+        userProfileRequestDto.setFullName(user.getFullName());
+        userProfileRequestDto.setUsername(user.getUsername());
 
-        var jwt = jwtService.generateToken(user);
-        var refreshToken = jwtService.generateRefereshToken(new HashMap<>(),user);
-
-        JwtAuthenticationResponse jwtAuthenticationResponse= new JwtAuthenticationResponse();
-        jwtAuthenticationResponse.setToken(jwt);
-        jwtAuthenticationResponse.setRefreshToken((String) refreshToken);
-        return jwtAuthenticationResponse;
+        return userProfileRequestDto;
+//
+//        var jwt = jwtService.generateToken(user);
+//        var refreshToken = jwtService.generateRefereshToken(new HashMap<>(),user);
+//
+//        JwtAuthenticationResponse jwtAuthenticationResponse= new JwtAuthenticationResponse();
+//        jwtAuthenticationResponse.setToken(jwt);
+//        jwtAuthenticationResponse.setRefreshToken((String) refreshToken);
+//        return jwtAuthenticationResponse;
     }
 
     @Override
@@ -127,6 +132,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             return jwtAuthenticationResponse;
         }
         return null;
+    }
+
+
+    @Override
+    public InputStream getUserDetail(String path, Integer id) throws IOException {
+        UserProfile userProfile =  userProfileRepository.findById(id).get();
+        String Path = userProfile.getProfilePath();
+
+        String fullPath = path + File.separator ;
+        return new FileInputStream(fullPath);
     }
 
 }

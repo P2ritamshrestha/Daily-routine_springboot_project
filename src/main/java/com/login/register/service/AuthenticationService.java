@@ -6,11 +6,13 @@ import com.login.register.Dto.SignInRequest;
 import com.login.register.Dto.UserProfileRequestDto;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 public interface AuthenticationService {
     void registerUser(String path, UserProfileRequestDto userProfileRequestDto) throws IOException;
     boolean verifyOtp(String email, String otp);
-    JwtAuthenticationResponse signIn(SignInRequest signInRequest);
+    UserProfileRequestDto signIn(SignInRequest signInRequest);
     JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest);
 
+    InputStream getUserDetail(String path, Integer id) throws IOException;
 }

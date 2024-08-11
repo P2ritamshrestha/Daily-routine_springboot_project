@@ -33,5 +33,8 @@ public class UserProfileRequestDto {
     @NotNull(message = "Profile picture is mandatory")
     private MultipartFile profile;
 
+    private Integer id;
+
+
 }
 
