@@ -4,7 +4,6 @@ package com.login.register.model;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 import java.util.Date;
 
@@ -29,7 +28,8 @@ public class Routine {
     private Date endDate;
 
     @Enumerated(EnumType.STRING)
-    private Section section;
+    @Column(name = "shifting_time")
+    private Shift shiftingTime;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
