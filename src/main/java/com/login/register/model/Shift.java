@@ -1,5 +1,5 @@
 package com.login.register.model;
 
 public enum Shift {
-    MORNING, MIDDAY, AFTERNOON, EVENING;
+    MORNING, MIDDAY, AFTERNOON;
 }
