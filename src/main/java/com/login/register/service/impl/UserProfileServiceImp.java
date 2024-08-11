@@ -1,21 +1,11 @@
 package com.login.register.service.impl;
 
-import com.login.register.Dto.JwtAuthenticationResponse;
-import com.login.register.Dto.RefreshTokenRequest;
-import com.login.register.Dto.SignInRequest;
-import com.login.register.Dto.UserProfileRequestDto;
 import com.login.register.Repository.UserProfileRepo;
-import com.login.register.model.UserProfile;
-import com.login.register.service.EmailService;
-import com.login.register.service.JwtService;
 import com.login.register.service.UserProfileService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service

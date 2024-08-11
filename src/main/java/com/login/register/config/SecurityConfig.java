@@ -29,8 +29,6 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request.requestMatchers("/api/v1/auth/**","/test/**")
                         .permitAll()
-//                        .requestMatchers("/test/admin/**").hasAuthority(Role.ADMIN.name())
-//                        .requestMatchers("/test/user/**").hasAuthority(Role.USER.name())
                         .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())

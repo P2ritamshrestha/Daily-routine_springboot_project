@@ -1,9 +1,7 @@
 package com.login.register.Dto;
 
 import jakarta.validation.constraints.*;
-
 import lombok.*;
-import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
@@ -19,9 +17,6 @@ public class UserProfileRequestDto {
     @Email(message = "Email should be valid")
     private String email;
 
-    private String phoneNumber;
-    private String address;
-
     @NotBlank(message = "Username is mandatory")
     @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
     private String username;
@@ -33,8 +28,8 @@ public class UserProfileRequestDto {
     @NotNull(message = "Profile picture is mandatory")
     private MultipartFile profile;
 
+
+    //Sign In:
     private Integer id;
-
-
 }
 
