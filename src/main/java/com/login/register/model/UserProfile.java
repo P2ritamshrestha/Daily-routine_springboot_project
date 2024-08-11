@@ -44,9 +44,6 @@ public class UserProfile implements UserDetails {
     @OneToMany(mappedBy = "userProfile", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Routine> routineList;
 
-//    @Enumerated(EnumType.STRING)
-//    private Role role;
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();

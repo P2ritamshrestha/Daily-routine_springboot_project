@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.io.InputStream;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
@@ -49,12 +50,6 @@ public class AuthenticationController {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(userProfile);
     }
-
-
-//    @PostMapping("/refresh")
-//    public ResponseEntity<JwtAuthenticationResponse> refresh(@RequestBody RefreshTokenRequest refreshTokenRequest){
-//        return ResponseEntity.ok(authenticationService.refreshToken(refreshTokenRequest));
-//    }
 
     @GetMapping(value = "/images/{id}",produces = MediaType.IMAGE_JPEG_VALUE )
     public void downloadImage(@PathVariable Integer id, HttpServletResponse response) throws IOException {

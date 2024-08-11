@@ -1,7 +1,6 @@
 package com.login.register.service.impl;
 
 import com.login.register.Dto.JwtAuthenticationResponse;
-import com.login.register.Dto.RefreshTokenRequest;
 import com.login.register.Dto.SignInRequest;
 import com.login.register.Dto.UserProfileRequestDto;
 import com.login.register.Repository.UserProfileRepo;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.Optional;
 import java.util.Random;
 
@@ -46,15 +44,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (userProfileRepository.findByEmail(userProfileRequestDto.getEmail()) != null) {
             throw new RuntimeException("Email already exists");
         }
-//        if (userProfileRequestDto.getFullName() == null || userProfileRequestDto.getFullName().length() < 3) {
-//            throw new RuntimeException("Full name is not valid");
-//        }
-//        if (userProfileRequestDto.getPassword() == null || !(userProfileRequestDto.getPassword().contains("@") || userProfileRequestDto.getPassword().contains("!"))) {
-//            throw new RuntimeException("Password is not valid");
-//        }
-//        if (userProfileRequestDto.getEmail() == null || !userProfileRequestDto.getEmail().endsWith("@gmail.com")) {
-//            throw new RuntimeException("Email is not valid");
-//        }
 
         String filepath= path+ File.separator+ userProfileRequestDto.getProfile().getOriginalFilename();
         File newFile = new File(path);
@@ -108,32 +97,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         userProfileRequestDto.setUsername(user.getUsername());
 
         return userProfileRequestDto;
-//
-//        var jwt = jwtService.generateToken(user);
-//        var refreshToken = jwtService.generateRefereshToken(new HashMap<>(),user);
-//
-//        JwtAuthenticationResponse jwtAuthenticationResponse= new JwtAuthenticationResponse();
-//        jwtAuthenticationResponse.setToken(jwt);
-//        jwtAuthenticationResponse.setRefreshToken((String) refreshToken);
-//        return jwtAuthenticationResponse;
     }
-
-    @Override
-    public JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
-        String username= jwtService.extractUserName(refreshTokenRequest.getToken());
-        UserProfile user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-        if(jwtService.isValidToken(refreshTokenRequest.getToken(), user)){
-            var jwt = jwtService.generateToken(user);
-
-            JwtAuthenticationResponse jwtAuthenticationResponse= new JwtAuthenticationResponse();
-            jwtAuthenticationResponse.setToken(jwt);
-            jwtAuthenticationResponse.setRefreshToken(refreshTokenRequest.getToken());
-            return jwtAuthenticationResponse;
-        }
-        return null;
-    }
-
 
     @Override
     public InputStream getUserDetail(String path, Integer id) throws IOException {
