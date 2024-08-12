@@ -1,11 +1,11 @@
 package com.login.register.model;
 
-
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalTime;
 
 @Entity
 @Data
@@ -21,11 +21,13 @@ public class Routine {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "start_date")
-    private Date startDate;
+    @NotNull(message = "Start time cannot be null")
+    @Column(name = "start_time")
+    private LocalTime startTime;
 
-    @Column(name = "end_date")
-    private Date endDate;
+    @NotNull(message = "End time cannot be null")
+    @Column(name = "end_time")
+    private LocalTime endTime;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "shifting_time")
