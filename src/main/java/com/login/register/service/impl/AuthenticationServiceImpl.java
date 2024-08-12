@@ -1,14 +1,15 @@
 package com.login.register.service.impl;
 
-import com.login.register.Dto.JwtAuthenticationResponse;
 import com.login.register.Dto.SignInRequest;
 import com.login.register.Dto.UserProfileRequestDto;
 import com.login.register.Repository.UserProfileRepo;
 import com.login.register.model.UserProfile;
 import com.login.register.service.AuthenticationService;
 import com.login.register.service.EmailService;
-import com.login.register.service.JwtService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,10 +18,11 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.Random;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -30,7 +32,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final EmailService emailService;
     private final UserProfileRepo userRepository;
     private final AuthenticationManager authenticationManager;
-    private final JwtService jwtService;
 
     @Override
     public void registerUser(String path, UserProfileRequestDto userProfileRequestDto) throws IOException {
@@ -100,12 +101,25 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public InputStream getUserDetail(String path, Integer id) throws IOException {
-        UserProfile userProfile =  userProfileRepository.findById(id).get();
-        String Path = userProfile.getProfilePath();
+    public InputStream getProfilePicture(String basePath, Integer id) throws IOException {
+        UserProfile userProfile = userProfileRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User profile not found for id: " + id));
 
-        String fullPath = path + File.separator ;
-        return new FileInputStream(fullPath);
+        String profilePath = userProfile.getProfilePath();
+        if (profilePath == null || profilePath.isEmpty()) {
+            throw new FileNotFoundException("Profile picture path is not set for user id: " + id);
+        }
+
+        Path imagePath = Paths.get(basePath, profilePath);
+
+        if (!Files.exists(imagePath)) {
+            throw new FileNotFoundException("File does not exist: " + imagePath);
+        }
+
+        if (!Files.isReadable(imagePath)) {
+            throw new AccessDeniedException("Cannot read file: " + imagePath);
+        }
+
+        return Files.newInputStream(imagePath);
     }
-
 }
