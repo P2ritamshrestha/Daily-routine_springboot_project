@@ -2,6 +2,7 @@ package com.login.register.controller;
 
 import com.login.register.Dto.RoutineDto;
 import com.login.register.service.RoutineService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

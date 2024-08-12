@@ -1,20 +1,22 @@
 package com.login.register.service.impl;
 
 import com.login.register.Dto.SignInRequest;
-import com.login.register.Dto.UserProfileRequestDto;
+import com.login.register.Dto.UserProfileDto;
 import com.login.register.Repository.UserProfileRepo;
 import com.login.register.model.UserProfile;
 import com.login.register.service.AuthenticationService;
 import com.login.register.service.EmailService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.AccessDeniedException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -22,6 +24,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.Random;
+import java.util.UUID;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -33,38 +37,43 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserProfileRepo userRepository;
     private final AuthenticationManager authenticationManager;
 
+    @Value("${Profile.image}")
+    private String path;
+
+
     @Override
-    public void registerUser(String path, UserProfileRequestDto userProfileRequestDto) throws IOException {
+    public void registerUser(UserProfileDto userProfileDto) throws IOException {
 
         // Validation
-            Optional<UserProfile> userProfileByUsername = userProfileRepository.findByUsername(userProfileRequestDto.getUsername());
+            Optional<UserProfile> userProfileByUsername = userProfileRepository.findByUsername(userProfileDto.getUsername());
             if (userProfileByUsername.isPresent()) {
                 throw new RuntimeException("Username already exists");
             }
 
-        if (userProfileRepository.findByEmail(userProfileRequestDto.getEmail()) != null) {
+        if (userProfileRepository.findByEmail(userProfileDto.getEmail()) != null) {
             throw new RuntimeException("Email already exists");
         }
 
-        String filepath= path+ File.separator+ userProfileRequestDto.getProfile().getOriginalFilename();
-        File newFile = new File(path);
-        if(!newFile.exists()){
-            newFile.mkdirs();
-        }
-        Files.copy(userProfileRequestDto.getProfile().getInputStream(), Paths.get(filepath));
+        MultipartFile file = userProfileDto.getProfile();
 
+        String uniqueFileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+        Path filePath = Paths.get(path, uniqueFileName);
+
+        // Save file to the local filesystem
+        Files.copy(file.getInputStream(), filePath);
 
         UserProfile userProfile = UserProfile.builder()
-                .fullName(userProfileRequestDto.getFullName())
-                .password(passwordEncoder.encode(userProfileRequestDto.getPassword()))
-                .username(userProfileRequestDto.getUsername())
-                .email(userProfileRequestDto.getEmail())
+                .fullName(userProfileDto.getFullName())
+                .password(passwordEncoder.encode(userProfileDto.getPassword()))
+                .username(userProfileDto.getUsername())
+                .email(userProfileDto.getEmail())
                 .otpCode(generateOtp())
-                .profilePath(filepath).build();
+                .name(uniqueFileName)
+                .profilePath(filePath.toString())
+                .build();
 
         userProfileRepository.save(userProfile);
-        emailService.sendOtpEmail(userProfileRequestDto.getEmail(), userProfile.getOtpCode());
-
+        emailService.sendOtpEmail(userProfileDto.getEmail(), userProfile.getOtpCode());
     }
 
     @Override
@@ -84,7 +93,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public UserProfileRequestDto signIn(SignInRequest signInRequest) {
+    public UserProfileDto signIn(SignInRequest signInRequest) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInRequest.getUsername(), signInRequest.getPassword()));
 
         UserProfile user = userRepository.findByUsername(signInRequest.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
@@ -92,34 +101,27 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (!user.isEnabled()){
             throw new RuntimeException("Otp not verified");
         }
-        UserProfileRequestDto userProfileRequestDto = new UserProfileRequestDto();
-        userProfileRequestDto.setId(user.getId());
-        userProfileRequestDto.setFullName(user.getFullName());
-        userProfileRequestDto.setUsername(user.getUsername());
-
-        return userProfileRequestDto;
+        UserProfileDto userProfileDto = new UserProfileDto();
+        userProfileDto.setId(user.getId());
+        userProfileDto.setFullName(user.getFullName());
+        userProfileDto.setUsername(user.getUsername());
+        userProfileDto.setName(user.getName());
+        return userProfileDto;
     }
 
     @Override
-    public InputStream getProfilePicture(String basePath, Integer id) throws IOException {
-        UserProfile userProfile = userProfileRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("User profile not found for id: " + id));
-
-        String profilePath = userProfile.getProfilePath();
-        if (profilePath == null || profilePath.isEmpty()) {
-            throw new FileNotFoundException("Profile picture path is not set for user id: " + id);
+    public Resource getImageAsResource(String imageName) throws IOException {
+        Path imagePath = Paths.get(path, imageName);
+        if (Files.exists(imagePath)) {
+            Resource resource = new UrlResource(imagePath.toUri());
+            if (resource.exists()) {
+                return resource;
+            } else {
+                throw new FileNotFoundException("Could not find the image " + imageName + " on the server.");
+            }
+        } else {
+            throw new FileNotFoundException("Could not find the image " + imageName + " on the server.");
         }
-
-        Path imagePath = Paths.get(basePath, profilePath);
-
-        if (!Files.exists(imagePath)) {
-            throw new FileNotFoundException("File does not exist: " + imagePath);
-        }
-
-        if (!Files.isReadable(imagePath)) {
-            throw new AccessDeniedException("Cannot read file: " + imagePath);
-        }
-
-        return Files.newInputStream(imagePath);
     }
+
 }

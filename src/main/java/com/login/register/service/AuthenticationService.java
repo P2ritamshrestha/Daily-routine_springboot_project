@@ -1,14 +1,15 @@
 package com.login.register.service;
 
 import com.login.register.Dto.SignInRequest;
-import com.login.register.Dto.UserProfileRequestDto;
+import com.login.register.Dto.UserProfileDto;
+import org.springframework.core.io.Resource;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 public interface AuthenticationService {
-    void registerUser(String path, UserProfileRequestDto userProfileRequestDto) throws IOException;
+    void registerUser(UserProfileDto userProfileDto) throws IOException;
     boolean verifyOtp(String email, String otp);
-    UserProfileRequestDto signIn(SignInRequest signInRequest);
-    InputStream getProfilePicture(String path, Integer id) throws IOException;
+    UserProfileDto signIn(SignInRequest signInRequest);
+    Resource getImageAsResource(String imageName) throws IOException;
+
 }

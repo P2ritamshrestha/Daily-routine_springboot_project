@@ -41,8 +41,8 @@ public class UserProfile implements UserDetails {
     @Column(name = "profile_path")
     private String profilePath;
 
-    @OneToMany(mappedBy = "userProfile", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Routine> routineList;
+    @Column(name = "pp_name")
+    private String name;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

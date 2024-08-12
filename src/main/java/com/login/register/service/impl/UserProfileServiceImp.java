@@ -21,7 +21,6 @@ public class UserProfileServiceImp implements UserProfileService {
             public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
                 return userProfileRepository.findByUsername(username)
                         .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
             }
         };
     }
