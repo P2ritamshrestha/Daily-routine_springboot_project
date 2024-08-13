@@ -9,6 +9,9 @@ import com.login.register.service.RoutineService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class RoutineServiceImpl implements RoutineService {
@@ -32,4 +35,24 @@ public class RoutineServiceImpl implements RoutineService {
         //Save routine
         routineRepo.save(routine);
     }
+
+    @Override
+    public List<RoutineDto> getRoutineByUserId(Integer id) {
+        List<Routine> routine= routineRepo.getRoutineByUserId(id)
+                .orElseThrow(() -> new RuntimeException("Routine not found"));
+        List<RoutineDto> routineList= new ArrayList<>();
+        for(Routine route: routine){
+            RoutineDto routineDto = new RoutineDto();
+            routineDto.setTitle(route.getTitle());
+            routineDto.setDescription(route.getDescription());
+            routineDto.setShiftingTime(route.getShiftingTime());
+            routineDto.setStartTime(route.getStartTime());
+            routineDto.setEndTime(route.getEndTime());
+            routineDto.setUserProfileId(id);
+            routineList.add(routineDto);
+        }
+
+        return routineList;
+    }
+
 }
