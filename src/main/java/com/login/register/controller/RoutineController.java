@@ -2,13 +2,13 @@ package com.login.register.controller;
 
 import com.login.register.Dto.RoutineDto;
 import com.login.register.service.RoutineService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:5173")
@@ -26,5 +26,10 @@ public class RoutineController {
         response.put("message", "User registered successfully");
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<List<RoutineDto>> getRoutine(@PathVariable Integer id) {
+        return new ResponseEntity<>(routineService.getRoutineByUserId(id),HttpStatus.OK);
     }
 }

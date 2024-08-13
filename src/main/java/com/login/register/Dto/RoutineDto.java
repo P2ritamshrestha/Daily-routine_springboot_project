@@ -1,6 +1,7 @@
 package com.login.register.Dto;
 
 import com.login.register.model.Shift;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
