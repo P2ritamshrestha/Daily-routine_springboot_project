@@ -17,5 +17,6 @@ public class UserProfileDto {
     //Sign In:
     private Integer id;
     private String name;
+    private String message;
 }
 

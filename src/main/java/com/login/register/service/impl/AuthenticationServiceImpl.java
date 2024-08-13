@@ -34,7 +34,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserProfileRepo userProfileRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
-    private final UserProfileRepo userRepository;
     private final AuthenticationManager authenticationManager;
 
     @Value("${Profile.image}")
@@ -94,14 +93,24 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public UserProfileDto signIn(SignInRequest signInRequest) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInRequest.getUsername(), signInRequest.getPassword()));
 
-        UserProfile user = userRepository.findByUsername(signInRequest.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        UserProfileDto userProfileDto = new UserProfileDto();
+
+        if (!userProfileRepository.existsByUsername(signInRequest.getUsername())) {
+            userProfileDto.setMessage("Invalid username");
+            return userProfileDto;
+        }
+        UserProfile user = userProfileRepository.findByUsername(signInRequest.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        if(!passwordEncoder.matches(signInRequest.getPassword(), user.getPassword())){
+            userProfileDto.setMessage("Invalid password");
+            return userProfileDto;
+        }
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInRequest.getUsername(), signInRequest.getPassword()));
 
         if (!user.isEnabled()){
             throw new RuntimeException("Otp not verified");
         }
-        UserProfileDto userProfileDto = new UserProfileDto();
+
         userProfileDto.setId(user.getId());
         userProfileDto.setFullName(user.getFullName());
         userProfileDto.setUsername(user.getUsername());
