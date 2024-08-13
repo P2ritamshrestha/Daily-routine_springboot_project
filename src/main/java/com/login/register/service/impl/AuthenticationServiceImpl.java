@@ -93,21 +93,25 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public UserProfileDto signIn(SignInRequest signInRequest) {
-
         UserProfileDto userProfileDto = new UserProfileDto();
 
         if (!userProfileRepository.existsByUsername(signInRequest.getUsername())) {
             userProfileDto.setMessage("Invalid username");
             return userProfileDto;
         }
-        UserProfile user = userProfileRepository.findByUsername(signInRequest.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        if(!passwordEncoder.matches(signInRequest.getPassword(), user.getPassword())){
+
+        UserProfile user = userProfileRepository.findByUsername(signInRequest.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        if (!passwordEncoder.matches(signInRequest.getPassword(), user.getPassword())) {
             userProfileDto.setMessage("Invalid password");
             return userProfileDto;
         }
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInRequest.getUsername(), signInRequest.getPassword()));
 
-        if (!user.isEnabled()){
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(signInRequest.getUsername(), signInRequest.getPassword()));
+
+        if (!user.isEnabled()) {
             throw new RuntimeException("Otp not verified");
         }
 
@@ -117,6 +121,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         userProfileDto.setName(user.getName());
         return userProfileDto;
     }
+
 
     @Override
     public Resource getImageAsResource(String imageName) throws IOException {

@@ -19,5 +19,6 @@ public class RoutineDto {
     private LocalTime endTime;
     private Shift shiftingTime;
     private Integer userProfileId;
+    private Long hour;
 
 }

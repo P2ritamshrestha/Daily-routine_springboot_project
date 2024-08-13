@@ -53,10 +53,27 @@ public class AuthenticationController {
     @PostMapping("/signIn")
     public ResponseEntity<UserProfileDto> signIn(@RequestBody SignInRequest signInRequest) {
         UserProfileDto userProfile = authenticationService.signIn(signInRequest);
+
+        if (userProfile.getMessage() != null) {
+            // Check if the message indicates an invalid username
+            if (userProfile.getMessage().equals("Invalid username")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(userProfile);
+            }
+            // Check if the message indicates an invalid password
+            if (userProfile.getMessage().equals("Invalid password")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(userProfile);
+            }
+        }
+
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(userProfile);
     }
+
 
 
     @GetMapping("/{imageName}")
