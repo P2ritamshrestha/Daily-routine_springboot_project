@@ -1,7 +1,6 @@
 package com.login.register.controller;
 
 import com.login.register.Dto.RoutineDto;
-import com.login.register.model.Routine;
 import com.login.register.service.RoutineService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
