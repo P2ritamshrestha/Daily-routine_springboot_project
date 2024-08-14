@@ -1,12 +1,10 @@
 package com.login.register.service.impl;
 
 import com.login.register.Dto.RoutineDto;
-import com.login.register.Dto.RoutineViewDto;
 import com.login.register.Dto.ShiftDto;
 import com.login.register.Repository.RoutineRepo;
 import com.login.register.Repository.UserProfileRepo;
 import com.login.register.model.Routine;
-import com.login.register.model.Shift;
 import com.login.register.model.UserProfile;
 import com.login.register.service.RoutineService;
 import lombok.RequiredArgsConstructor;
@@ -49,21 +47,22 @@ public class RoutineServiceImpl implements RoutineService {
     }
 
     @Override
-    public List<RoutineViewDto> getRoutineByShift(ShiftDto shiftDto , Integer id) {
+    public List<RoutineDto> getRoutineByShift(ShiftDto shiftDto , Integer id) {
 
         String shiftString = shiftDto.getShift().toString();
         List<Routine> routine = routineRepo.getRoutineByShift(shiftString,id);
-        List<RoutineViewDto> routineList = new ArrayList<>();
+        List<RoutineDto> routineList = new ArrayList<>();
         for (Routine route : routine) {
-            RoutineViewDto routineViewDto = new RoutineViewDto();
-            routineViewDto.setId(route.getId());
-            routineViewDto.setTitle(route.getTitle());
-            routineViewDto.setShiftingTime(route.getShiftingTime());
+            RoutineDto routineDto = new RoutineDto();
+            routineDto.setTitle(route.getTitle());
+            routineDto.setDescription(route.getDescription());
+            routineDto.setStartTime(route.getStartTime());
+            routineDto.setEndTime(route.getEndTime());
+            routineDto.setShiftingTime(route.getShiftingTime());
             Duration duration = Duration.between(route.getStartTime(), route.getEndTime());
             Long hours = duration.toHours();
-            routineViewDto.setHour(hours);
-
-            routineList.add(routineViewDto);
+            routineDto.setHour(hours);
+            routineList.add(routineDto);
         }
         return routineList;
     }
