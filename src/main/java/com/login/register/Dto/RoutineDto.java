@@ -13,6 +13,7 @@ import java.time.LocalTime;
 @Setter
 public class RoutineDto {
 
+    private Integer id;
     private String title;
     private String description;
     private LocalTime startTime;

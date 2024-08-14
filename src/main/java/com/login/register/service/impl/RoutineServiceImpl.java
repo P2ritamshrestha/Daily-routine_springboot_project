@@ -54,6 +54,7 @@ public class RoutineServiceImpl implements RoutineService {
         List<RoutineDto> routineList = new ArrayList<>();
         for (Routine route : routine) {
             RoutineDto routineDto = new RoutineDto();
+            routineDto.setId(route.getId());
             routineDto.setTitle(route.getTitle());
             routineDto.setUserProfileId(id);
             routineDto.setDescription(route.getDescription());
