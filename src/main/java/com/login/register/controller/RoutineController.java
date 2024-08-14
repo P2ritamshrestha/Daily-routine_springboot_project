@@ -2,6 +2,7 @@ package com.login.register.controller;
 
 import com.login.register.Dto.RoutineDto;
 import com.login.register.Dto.ShiftDto;
+import com.login.register.model.Shift;
 import com.login.register.service.RoutineService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -38,9 +39,9 @@ public class RoutineController {
     }
 
 
-    @GetMapping("/shift/{id}")
-    public ResponseEntity<List<RoutineDto>> getRoutineByShift(@RequestBody ShiftDto shiftDto,@PathVariable Integer id) {
-        return new ResponseEntity<>(routineService.getRoutineByShift(shiftDto, id),HttpStatus.OK);
+    @GetMapping("/{shift}/{id}")
+    public ResponseEntity<List<RoutineDto>> getRoutineByShift(@PathVariable Shift shift, @PathVariable Integer id) {
+        return new ResponseEntity<>(routineService.getRoutineByShift(shift, id),HttpStatus.OK);
     }
 
 }

@@ -5,6 +5,7 @@ import com.login.register.Dto.ShiftDto;
 import com.login.register.Repository.RoutineRepo;
 import com.login.register.Repository.UserProfileRepo;
 import com.login.register.model.Routine;
+import com.login.register.model.Shift;
 import com.login.register.model.UserProfile;
 import com.login.register.service.RoutineService;
 import lombok.RequiredArgsConstructor;
@@ -45,11 +46,10 @@ public class RoutineServiceImpl implements RoutineService {
 
         return shiftList;
     }
-
     @Override
-    public List<RoutineDto> getRoutineByShift(ShiftDto shiftDto , Integer id) {
+    public List<RoutineDto> getRoutineByShift(Shift shift, Integer id) {
 
-        String shiftString = shiftDto.getShift().toString();
+        String shiftString = shift.toString();
         List<Routine> routine = routineRepo.getRoutineByShift(shiftString,id);
         List<RoutineDto> routineList = new ArrayList<>();
         for (Routine route : routine) {
