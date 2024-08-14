@@ -13,9 +13,9 @@ import java.util.Optional;
 
 @Repository
 public interface RoutineRepo extends JpaRepository<Routine, Integer> {
-    @Query(value = "SELECT * FROM routine r where r.user_id= :id", nativeQuery = true)
-    Optional<List<Routine>> getRoutineByUserId(Integer id);
+    @Query(value = "SELECT DISTINCT r.shifting_time FROM routine r WHERE r.user_id = :id", nativeQuery = true)
+    Optional<List<String>> getShiftByUserId(Integer id);
 
-    @Query(value = "SELECT * FROM Routine r WHERE r.shifting_time= :shift ", nativeQuery = true)
-    List<Routine> getRoutineByShift(String shift);
+    @Query(value = "SELECT * FROM Routine r WHERE r.shifting_time= :shift AND r.user_id= :id", nativeQuery = true)
+    List<Routine> getRoutineByShift(String shift, Integer id);
 }

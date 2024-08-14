@@ -40,29 +40,19 @@ public class RoutineServiceImpl implements RoutineService {
     }
 
     @Override
-    public List<RoutineDto> getRoutineByUserId(Integer id) {
-        List<Routine> routine = routineRepo.getRoutineByUserId(id)
-                .orElseThrow(() -> new RuntimeException("Routine not found"));
-        List<RoutineDto> routineList = new ArrayList<>();
-        for (Routine route : routine) {
-            RoutineDto routineDto = new RoutineDto();
-            routineDto.setTitle(route.getTitle());
-            routineDto.setDescription(route.getDescription());
-            routineDto.setShiftingTime(route.getShiftingTime());
-            routineDto.setStartTime(route.getStartTime());
-            routineDto.setEndTime(route.getEndTime());
-            routineDto.setUserProfileId(id);
-            routineList.add(routineDto);
-        }
+    public List<String> getShiftByUserId(Integer id) {
+        List<String> shiftList = routineRepo.getShiftByUserId(id)
+                .orElseThrow(() -> new RuntimeException("Shift not found"));
 
-        return routineList;
+
+        return shiftList;
     }
 
     @Override
-    public List<RoutineViewDto> getRoutineByShift(ShiftDto shiftDto) {
+    public List<RoutineViewDto> getRoutineByShift(ShiftDto shiftDto , Integer id) {
 
         String shiftString = shiftDto.getShift().toString();
-        List<Routine> routine = routineRepo.getRoutineByShift(shiftString);
+        List<Routine> routine = routineRepo.getRoutineByShift(shiftString,id);
         List<RoutineViewDto> routineList = new ArrayList<>();
         for (Routine route : routine) {
             RoutineViewDto routineViewDto = new RoutineViewDto();
