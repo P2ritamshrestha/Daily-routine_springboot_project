@@ -14,9 +14,9 @@ import java.util.List;
 public interface RoutineService {
 
     void saveRoutine(RoutineDto routineDto);
-    List<RoutineDto> getRoutineByUserId(Integer id);
+    List<String> getShiftByUserId(Integer id);
 
-    List<RoutineViewDto> getRoutineByShift(ShiftDto shiftDto);
+    List<RoutineViewDto> getRoutineByShift(ShiftDto shiftDto, Integer id);
 
     Routine getRoutineById(Integer id);
 }

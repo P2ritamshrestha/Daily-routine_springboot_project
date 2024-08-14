@@ -33,19 +33,23 @@ public class RoutineController {
     }
 
     @GetMapping("/user/{id}")
-    public ResponseEntity<List<RoutineDto>> getRoutine(@PathVariable Integer id) {
-        return new ResponseEntity<>(routineService.getRoutineByUserId(id),HttpStatus.OK);
+    public ResponseEntity<Map<String, List<String>>> getShiftByUserId(@PathVariable Integer id) {
+        List<String> shifts = routineService.getShiftByUserId(id);
+        Map<String, List<String>> response = new HashMap<>();
+        response.put("shifts", shifts);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/shift")
-    public ResponseEntity<List<RoutineViewDto>> getRoutineByShift(@RequestBody ShiftDto shiftDto) {
-        return new ResponseEntity<>(routineService.getRoutineByShift(shiftDto),HttpStatus.OK);
-    }
 
-    @GetMapping("/id")
-    public ResponseEntity<Routine> getRoutineById(@RequestParam Integer id) {
-        return new ResponseEntity<>(routineService.getRoutineById(id),HttpStatus.OK);
+    @GetMapping("/shift/{id}")
+    public ResponseEntity<List<RoutineViewDto>> getRoutineByShift(@RequestBody ShiftDto shiftDto,@PathVariable Integer id) {
+        return new ResponseEntity<>(routineService.getRoutineByShift(shiftDto, id),HttpStatus.OK);
     }
+//
+//    @GetMapping("/id")
+//    public ResponseEntity<Routine> getRoutineById(@PathVariable Integer id) {
+//        return new ResponseEntity<>(routineService.getRoutineById(id),HttpStatus.OK);
+//    }
 
 
 }
