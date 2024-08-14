@@ -55,6 +55,7 @@ public class RoutineServiceImpl implements RoutineService {
         for (Routine route : routine) {
             RoutineDto routineDto = new RoutineDto();
             routineDto.setTitle(route.getTitle());
+            routineDto.setUserProfileId(id);
             routineDto.setDescription(route.getDescription());
             routineDto.setStartTime(route.getStartTime());
             routineDto.setEndTime(route.getEndTime());
