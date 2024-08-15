@@ -7,6 +7,7 @@ import com.login.register.model.Shift;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public interface RoutineService {
@@ -17,4 +18,8 @@ public interface RoutineService {
     List<RoutineDto> getRoutineByShift(Shift shift, Integer id);
 
     Routine getRoutineById(Integer id);
+
+    String deleteRoutineById(Integer id);
+
+    void updateRoutineById(Integer id, RoutineDto routineDto);
 }

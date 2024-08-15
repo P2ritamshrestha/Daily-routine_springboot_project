@@ -26,7 +26,6 @@ public class RoutineController {
         routineService.saveRoutine(routineDto);
         Map<String, String> response = new HashMap<>();
         response.put("message", "User registered successfully");
-
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
@@ -38,10 +37,24 @@ public class RoutineController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-
     @GetMapping("/{shift}/{id}")
     public ResponseEntity<List<RoutineDto>> getRoutineByShift(@PathVariable Shift shift, @PathVariable Integer id) {
         return new ResponseEntity<>(routineService.getRoutineByShift(shift, id),HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Map<String,String>> deleteRoutine(@PathVariable Integer id) {
+        Map<String, String> response = new HashMap<>();
+        response.put("msg",routineService.deleteRoutineById(id));
+        return  new ResponseEntity<>(response,HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Map<String,String>> updateRoutine(@PathVariable Integer id, @RequestBody RoutineDto routineDto) {
+        routineService.updateRoutineById(id,routineDto);
+        Map<String, String> response = new HashMap<>();
+        response.put("msg", "Update Success");
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 }
