@@ -56,9 +56,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         MultipartFile file = userProfileDto.getProfile();
 
         String uniqueFileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+        File newFile = new File(path);
+        if(!newFile.exists()){
+            newFile.mkdirs();
+        }
         Path filePath = Paths.get(path, uniqueFileName);
 
-        // Save file to the local filesystem
         Files.copy(file.getInputStream(), filePath);
 
         UserProfile userProfile = UserProfile.builder()
