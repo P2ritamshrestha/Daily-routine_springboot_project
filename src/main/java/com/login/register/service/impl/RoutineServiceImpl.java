@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -83,11 +84,21 @@ public class RoutineServiceImpl implements RoutineService {
     @Override
     public void updateRoutineById(Integer id, RoutineDto routineDto) {
         Routine routine= routineRepo.findById(id).orElseThrow(() -> new RuntimeException("Routine not found"));
-        routine.setTitle(routineDto.getTitle());
-        routine.setDescription(routineDto.getDescription());
-        routine.setStartTime(routineDto.getStartTime());
-        routine.setEndTime(routineDto.getEndTime());
-        routine.setShiftingTime(routineDto.getShiftingTime());
+        if(Objects.nonNull(routineDto.getTitle())) {
+            routine.setTitle(routineDto.getTitle());
+        }
+        if(Objects.nonNull(routineDto.getDescription())) {
+            routine.setDescription(routineDto.getDescription());
+        }
+        if(Objects.nonNull(routineDto.getStartTime())) {
+            routine.setStartTime(routineDto.getStartTime());
+        }
+        if(Objects.nonNull(routineDto.getEndTime())) {
+            routine.setEndTime(routineDto.getEndTime());
+        }
+        if(Objects.nonNull(routineDto.getShiftingTime())) {
+            routine.setShiftingTime(routineDto.getShiftingTime());
+        }
         routineRepo.save(routine);
 
     }
