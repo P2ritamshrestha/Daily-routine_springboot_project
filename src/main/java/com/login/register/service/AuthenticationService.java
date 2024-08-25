@@ -12,4 +12,5 @@ public interface AuthenticationService {
     UserProfileDto signIn(SignInRequest signInRequest);
     Resource getImageAsResource(String imageName) throws IOException;
 
+    UserProfileDto getProfileDetail(Integer id);
 }

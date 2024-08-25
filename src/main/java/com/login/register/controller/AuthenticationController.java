@@ -2,6 +2,7 @@ package com.login.register.controller;
 
 import com.login.register.Dto.SignInRequest;
 import com.login.register.Dto.UserProfileDto;
+import com.login.register.model.UserProfile;
 import com.login.register.service.AuthenticationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -83,6 +84,13 @@ public class AuthenticationController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + imageName + "\"")
                 .contentType(MediaType.parseMediaType("image/jpeg"))
                 .body(imageResource);
+    }
+
+    @GetMapping("/profile/{id}")
+    public ResponseEntity<Map<String , UserProfileDto>> getProfile(@PathVariable Integer id){
+        Map<String ,UserProfileDto>  userProfileMap= new HashMap<>();
+        userProfileMap.put("profileDetail",authenticationService.getProfileDetail(id));
+        return  ResponseEntity.ok(userProfileMap);
     }
 
 

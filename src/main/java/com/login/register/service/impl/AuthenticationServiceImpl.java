@@ -141,4 +141,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
     }
 
+    @Override
+    public UserProfileDto getProfileDetail(Integer id) {
+       UserProfile userProfile= userProfileRepository.findById(id).get();
+        UserProfileDto userProfileDto = new UserProfileDto();
+        userProfileDto.setFullName(userProfile.getFullName());
+        userProfileDto.setUsername(userProfile.getUsername());
+        userProfileDto.setEmail(userProfile.getEmail());
+        return userProfileDto;
+    }
 }
