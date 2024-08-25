@@ -22,6 +22,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
@@ -154,10 +155,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public String updateProfile(Integer id, UserProfileDto userProfileDto) {
         UserProfile userProfile= userProfileRepository.findById(id).orElseThrow(RuntimeException::new);
-        userProfile.setFullName(userProfileDto.getFullName());
-        userProfile.setUsername(userProfileDto.getUsername());
-        userProfile.setPassword(passwordEncoder.encode(userProfileDto.getPassword()));
-
+        if(Objects.nonNull(userProfileDto.getFullName())) {
+            userProfile.setFullName(userProfileDto.getFullName());
+        }
+        if(Objects.nonNull(userProfileDto.getUsername())) {
+            userProfile.setUsername(userProfileDto.getUsername());
+        }
+        if(Objects.nonNull(userProfileDto.getPassword())) {
+            userProfile.setPassword(passwordEncoder.encode(userProfileDto.getPassword()));
+        }
         userProfileRepository.save(userProfile);
         return "Profile updated successfully";
     }
