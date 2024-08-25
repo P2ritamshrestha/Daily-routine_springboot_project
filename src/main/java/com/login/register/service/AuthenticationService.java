@@ -13,4 +13,6 @@ public interface AuthenticationService {
     Resource getImageAsResource(String imageName) throws IOException;
 
     UserProfileDto getProfileDetail(Integer id);
+
+    String updateProfile(Integer id, UserProfileDto userProfileDto);
 }

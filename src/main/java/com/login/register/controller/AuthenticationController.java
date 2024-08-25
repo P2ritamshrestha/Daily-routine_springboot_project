@@ -93,6 +93,13 @@ public class AuthenticationController {
         return  ResponseEntity.ok(userProfileMap);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Map<String,String>> updateProfile(@PathVariable Integer id, @RequestBody UserProfileDto userProfileDto){
+        String response= authenticationService.updateProfile(id,userProfileDto);
+        Map<String, String> map = new HashMap<>();
+        map.put("message", response);
+        return ResponseEntity.ok(map);
+    }
 
 
 }

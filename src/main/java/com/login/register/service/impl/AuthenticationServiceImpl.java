@@ -150,4 +150,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         userProfileDto.setEmail(userProfile.getEmail());
         return userProfileDto;
     }
+
+    @Override
+    public String updateProfile(Integer id, UserProfileDto userProfileDto) {
+        UserProfile userProfile= userProfileRepository.findById(id).orElseThrow(RuntimeException::new);
+        userProfile.setFullName(userProfileDto.getFullName());
+        userProfile.setUsername(userProfileDto.getUsername());
+        userProfile.setPassword(passwordEncoder.encode(userProfileDto.getPassword()));
+
+        userProfileRepository.save(userProfile);
+        return "Profile updated successfully";
+    }
 }
