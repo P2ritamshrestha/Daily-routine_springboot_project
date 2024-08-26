@@ -102,4 +102,12 @@ public class AuthenticationController {
     }
 
 
+    @PutMapping(value = "/image/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Resource> updateProfileImage(@PathVariable Integer id, @ModelAttribute UserProfileDto userProfileDto) throws IOException {
+        Resource imageResource=  authenticationService.updateImage(id,userProfileDto);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + userProfileDto.getProfile().getOriginalFilename() + "\"")
+                .contentType(MediaType.parseMediaType("image/jpeg"))
+                .body(imageResource);
+    }
 }

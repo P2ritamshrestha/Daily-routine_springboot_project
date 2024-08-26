@@ -167,4 +167,21 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         userProfileRepository.save(userProfile);
         return "Profile updated successfully";
     }
+
+    @Override
+    public Resource updateImage(Integer id, UserProfileDto userProfileDto) throws IOException {
+       UserProfile userProfile= userProfileRepository.findById(id).get();
+        String uniqueFileName = UUID.randomUUID().toString() + "_" + userProfileDto.getProfile().getOriginalFilename();
+        File newFile = new File(path);
+        Path filePath = Paths.get(path, uniqueFileName);
+
+        Files.copy(userProfileDto.getProfile().getInputStream(), filePath);
+        userProfile.setProfilePath(filePath.toString());
+        userProfile.setName(uniqueFileName);
+        userProfileRepository.save(userProfile);
+
+        UserProfile profile= userProfileRepository.findById(id).get();
+      Resource imageAsResource  = getImageAsResource(profile.getName());
+      return imageAsResource;
+    }
 }

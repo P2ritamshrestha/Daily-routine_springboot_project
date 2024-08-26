@@ -3,6 +3,7 @@ package com.login.register.service;
 import com.login.register.Dto.SignInRequest;
 import com.login.register.Dto.UserProfileDto;
 import org.springframework.core.io.Resource;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -15,4 +16,6 @@ public interface AuthenticationService {
     UserProfileDto getProfileDetail(Integer id);
 
     String updateProfile(Integer id, UserProfileDto userProfileDto);
+
+     Resource updateImage(Integer id, UserProfileDto userProfileDto) throws IOException;
 }
