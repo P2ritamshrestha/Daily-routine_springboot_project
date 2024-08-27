@@ -78,7 +78,7 @@ public class RoutineServiceImpl implements RoutineService {
     @Override
     public String deleteRoutineById(Integer id) {
         routineRepo.deleteById(id);
-        return "Delete Success";
+        return "Delete Successfully";
     }
 
     @Override
